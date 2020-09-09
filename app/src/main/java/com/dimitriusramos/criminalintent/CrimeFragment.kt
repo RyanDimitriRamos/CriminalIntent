@@ -22,11 +22,7 @@ class CrimeFragment: Fragment() {
         crime = Crime()
 
     }
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_crime, container, false)
         titleField = view.findViewById(R.id.crime_title) as EditText
         dateButton = view.findViewById(R.id.crime_date) as Button
@@ -42,23 +38,12 @@ class CrimeFragment: Fragment() {
     override fun onStart() {
         super.onStart()
         val titleWatcher = object: TextWatcher {
-            override fun beforeTextChanged(
-                sequence: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ){
+            override fun beforeTextChanged(sequence: CharSequence?, start: Int, count: Int, after: Int){
                 //This space intentionally left blank because I only need the onTextChanged function
             }
-            override  fun onTextChanged(
-                sequence: CharSequence?,
-                start: Int,
-                before: Int,
-                count: Int
-            ){
+            override  fun onTextChanged(sequence: CharSequence?, start: Int, before: Int, count: Int){
                 crime.title = sequence.toString()
             }
-
             override fun afterTextChanged(sequence: Editable?) {
                 // this is left blank too
             }
