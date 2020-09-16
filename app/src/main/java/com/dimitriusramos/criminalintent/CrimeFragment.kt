@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.DatePicker
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,7 +18,9 @@ import java.util.*
 import androidx.lifecycle.Observer
 private const val TAG = "CrimeFragment"
 private const val ARG_CRIME_ID = "crime_id"
-class CrimeFragment: Fragment() {
+private const val DIALOG_DATE = "DialogDate"
+private const val REQUEST_DATE = 0
+class CrimeFragment: Fragment(), DatePickerFragment.Callbacks {
     private lateinit var crime: Crime
     private lateinit var titleField: EditText
     private lateinit var  dateButton: Button
@@ -49,11 +52,6 @@ class CrimeFragment: Fragment() {
         dateButton = view.findViewById(R.id.crime_date) as Button
         solvedCheckBox = view.findViewById(R.id.crime_solved) as CheckBox
 
-        dateButton.apply{
-            val formatter = SimpleDateFormat("EEEE, MMM dd, yyyy hh:mm a", Locale.getDefault())
-            text = formatter.format(crime.date)
-            isEnabled = false
-        }
         return view
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -80,6 +78,14 @@ class CrimeFragment: Fragment() {
                 // this is left blank too
             }
         }
+
+        dateButton.setOnClickListener{
+            DatePickerFragment.newInstance(crime.date).apply{
+                setTargetFragment(this@CrimeFragment, REQUEST_DATE)
+                show(this@CrimeFragment.parentFragmentManager, DIALOG_DATE)
+            }
+        }
+
         titleField.addTextChangedListener(titleWatcher)
 
         /*Check if the check box isChecked, if it is set crime's isSolved field to the status of the checkBox*/
@@ -95,9 +101,13 @@ class CrimeFragment: Fragment() {
         crimeDetailViewModel.saveCrime(crime)
     }
 
+    override fun onDateSelected(date: Date) {
+        crime.date = date
+        updateUI()
+    }
     private fun updateUI(){
         titleField.setText(crime.title)
-        val formatter = SimpleDateFormat("EEEE, MMM dd, yyyy hh:mm a", Locale.getDefault())
+        val formatter = SimpleDateFormat("EEEE, MMM dd, yyyy", Locale.getDefault())
         dateButton.text = formatter.format(crime.date)
         solvedCheckBox.apply{
             isChecked = crime.isSolved
